@@ -1,24 +1,27 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { useStore } from "@/lib/store";
+import { Loading } from "@/components/ww/Loading";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "WaterWatch — Your home's water, watched" },
+      { name: "description", content: "Track household water use, tank level and outlets in real time, and catch leaks before they waste water." },
+      { property: "og:title", content: "WaterWatch — Your home's water, watched" },
+      { property: "og:description", content: "Real-time household water monitoring and explainable leak detection." },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
+  const { state, hydrated } = useStore();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!hydrated) return;
+    if (!state.loggedIn) navigate({ to: state.user ? "/login" : "/signup", replace: true });
+    else navigate({ to: state.setupDone ? "/dashboard" : "/setup", replace: true });
+  }, [hydrated, state.loggedIn, state.setupDone, state.user, navigate]);
+  return <Loading />;
 }
