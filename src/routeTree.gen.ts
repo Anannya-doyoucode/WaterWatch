@@ -14,7 +14,15 @@ import { Route as ShellRouteImport } from './routes/_shell'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as SetupRouteImport } from './routes/setup'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as ShellAiDetectionRouteImport } from './routes/_shell.ai-detection'
+import { Route as ShellAlertsRouteImport } from './routes/_shell.alerts'
+import { Route as ShellAnalyticsRouteImport } from './routes/_shell.analytics'
 import { Route as ShellDashboardRouteImport } from './routes/_shell.dashboard'
+import { Route as ShellDevicesRouteImport } from './routes/_shell.devices'
+import { Route as ShellHistoryRouteImport } from './routes/_shell.history'
+import { Route as ShellHomeRouteImport } from './routes/_shell.home'
+import { Route as ShellMonitorRouteImport } from './routes/_shell.monitor'
+import { Route as ShellSettingsRouteImport } from './routes/_shell.settings'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,9 +48,49 @@ const SignupRoute = SignupRouteImport.update({
   path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ShellAiDetectionRoute = ShellAiDetectionRouteImport.update({
+  id: '/ai-detection',
+  path: '/ai-detection',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellAlertsRoute = ShellAlertsRouteImport.update({
+  id: '/alerts',
+  path: '/alerts',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellAnalyticsRoute = ShellAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => ShellRoute,
+} as any)
 const ShellDashboardRoute = ShellDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellDevicesRoute = ShellDevicesRouteImport.update({
+  id: '/devices',
+  path: '/devices',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellHistoryRoute = ShellHistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellHomeRoute = ShellHomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellMonitorRoute = ShellMonitorRouteImport.update({
+  id: '/monitor',
+  path: '/monitor',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellSettingsRoute = ShellSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => ShellRoute,
 } as any)
 
@@ -51,14 +99,30 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/setup': typeof SetupRoute
   '/signup': typeof SignupRoute
+  '/ai-detection': typeof ShellAiDetectionRoute
+  '/alerts': typeof ShellAlertsRoute
+  '/analytics': typeof ShellAnalyticsRoute
   '/dashboard': typeof ShellDashboardRoute
+  '/devices': typeof ShellDevicesRoute
+  '/history': typeof ShellHistoryRoute
+  '/home': typeof ShellHomeRoute
+  '/monitor': typeof ShellMonitorRoute
+  '/settings': typeof ShellSettingsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/setup': typeof SetupRoute
   '/signup': typeof SignupRoute
+  '/ai-detection': typeof ShellAiDetectionRoute
+  '/alerts': typeof ShellAlertsRoute
+  '/analytics': typeof ShellAnalyticsRoute
   '/dashboard': typeof ShellDashboardRoute
+  '/devices': typeof ShellDevicesRoute
+  '/history': typeof ShellHistoryRoute
+  '/home': typeof ShellHomeRoute
+  '/monitor': typeof ShellMonitorRoute
+  '/settings': typeof ShellSettingsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -67,13 +131,47 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/setup': typeof SetupRoute
   '/signup': typeof SignupRoute
+  '/_shell/ai-detection': typeof ShellAiDetectionRoute
+  '/_shell/alerts': typeof ShellAlertsRoute
+  '/_shell/analytics': typeof ShellAnalyticsRoute
   '/_shell/dashboard': typeof ShellDashboardRoute
+  '/_shell/devices': typeof ShellDevicesRoute
+  '/_shell/history': typeof ShellHistoryRoute
+  '/_shell/home': typeof ShellHomeRoute
+  '/_shell/monitor': typeof ShellMonitorRoute
+  '/_shell/settings': typeof ShellSettingsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/setup' | '/signup' | '/dashboard'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/setup'
+    | '/signup'
+    | '/ai-detection'
+    | '/alerts'
+    | '/analytics'
+    | '/dashboard'
+    | '/devices'
+    | '/history'
+    | '/home'
+    | '/monitor'
+    | '/settings'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/setup' | '/signup' | '/dashboard'
+  to:
+    | '/'
+    | '/login'
+    | '/setup'
+    | '/signup'
+    | '/ai-detection'
+    | '/alerts'
+    | '/analytics'
+    | '/dashboard'
+    | '/devices'
+    | '/history'
+    | '/home'
+    | '/monitor'
+    | '/settings'
   id:
     | '__root__'
     | '/'
@@ -81,7 +179,15 @@ export interface FileRouteTypes {
     | '/login'
     | '/setup'
     | '/signup'
+    | '/_shell/ai-detection'
+    | '/_shell/alerts'
+    | '/_shell/analytics'
     | '/_shell/dashboard'
+    | '/_shell/devices'
+    | '/_shell/history'
+    | '/_shell/home'
+    | '/_shell/monitor'
+    | '/_shell/settings'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -129,6 +235,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_shell/ai-detection': {
+      id: '/_shell/ai-detection'
+      path: '/ai-detection'
+      fullPath: '/ai-detection'
+      preLoaderRoute: typeof ShellAiDetectionRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/alerts': {
+      id: '/_shell/alerts'
+      path: '/alerts'
+      fullPath: '/alerts'
+      preLoaderRoute: typeof ShellAlertsRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/analytics': {
+      id: '/_shell/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof ShellAnalyticsRouteImport
+      parentRoute: typeof ShellRoute
+    }
     '/_shell/dashboard': {
       id: '/_shell/dashboard'
       path: '/dashboard'
@@ -136,15 +263,66 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShellDashboardRouteImport
       parentRoute: typeof ShellRoute
     }
+    '/_shell/devices': {
+      id: '/_shell/devices'
+      path: '/devices'
+      fullPath: '/devices'
+      preLoaderRoute: typeof ShellDevicesRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/history': {
+      id: '/_shell/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof ShellHistoryRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/home': {
+      id: '/_shell/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof ShellHomeRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/monitor': {
+      id: '/_shell/monitor'
+      path: '/monitor'
+      fullPath: '/monitor'
+      preLoaderRoute: typeof ShellMonitorRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/settings': {
+      id: '/_shell/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof ShellSettingsRouteImport
+      parentRoute: typeof ShellRoute
+    }
   }
 }
 
 interface ShellRouteChildren {
+  ShellAiDetectionRoute: typeof ShellAiDetectionRoute
+  ShellAlertsRoute: typeof ShellAlertsRoute
+  ShellAnalyticsRoute: typeof ShellAnalyticsRoute
   ShellDashboardRoute: typeof ShellDashboardRoute
+  ShellDevicesRoute: typeof ShellDevicesRoute
+  ShellHistoryRoute: typeof ShellHistoryRoute
+  ShellHomeRoute: typeof ShellHomeRoute
+  ShellMonitorRoute: typeof ShellMonitorRoute
+  ShellSettingsRoute: typeof ShellSettingsRoute
 }
 
 const ShellRouteChildren: ShellRouteChildren = {
+  ShellAiDetectionRoute: ShellAiDetectionRoute,
+  ShellAlertsRoute: ShellAlertsRoute,
+  ShellAnalyticsRoute: ShellAnalyticsRoute,
   ShellDashboardRoute: ShellDashboardRoute,
+  ShellDevicesRoute: ShellDevicesRoute,
+  ShellHistoryRoute: ShellHistoryRoute,
+  ShellHomeRoute: ShellHomeRoute,
+  ShellMonitorRoute: ShellMonitorRoute,
+  ShellSettingsRoute: ShellSettingsRoute,
 }
 
 const ShellRouteWithChildren = ShellRoute._addFileChildren(ShellRouteChildren)
