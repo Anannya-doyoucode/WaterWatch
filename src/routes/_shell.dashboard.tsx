@@ -92,7 +92,7 @@ function Dashboard() {
             <ul className="-my-2 divide-y">
               {state.alerts.slice(0, 3).map((a) => (
                 <li key={a.id}>
-                  <Link to={a.link} className="flex items-center gap-3 py-2.5 hover:opacity-80">
+                  <Link to={a.link as "/alerts"} className="flex items-center gap-3 py-2.5 hover:opacity-80">
                     <StatusBadge tone={a.status === "resolved" ? "success" : a.severity === "critical" ? "critical" : a.severity === "warning" ? "warning" : "info"} className="px-1.5">{""}</StatusBadge>
                     <div className="min-w-0 flex-1"><p className="truncate text-sm font-medium">{a.title}</p><p className="text-xs text-muted-foreground">{fmtDay(a.time)}, {fmtTime(a.time)}</p></div>
                     <ArrowRight className="size-4 shrink-0 text-muted-foreground" />
