@@ -55,7 +55,9 @@ export function defaultOutlets(): Outlet[] {
 
 function seed(): State {
   return {
-    user: null, loggedIn: false, setupDone: false,
+    user: { name: "Ananya", email: "ananya@example.in", password: "password123" },
+    loggedIn: true,
+    setupDone: true,
     home: {
       name: "Green Park Home", address: "24 Green Park Road, Mumbai, India", homeType: "Apartment",
       residents: 4, floors: 2, source: "Municipal + Tank", tankCapacity: 1000, tankLevel: 72,
@@ -98,13 +100,27 @@ function seed(): State {
 const KEY = "waterwatch:v1";
 const SEEN_KEY = "hasSeenInitialAlert";
 
-interface Ctx {
+export interface Ctx {
   state: State; hydrated: boolean;
   update: (fn: (s: State) => State) => void;
   addHistory: (e: Omit<HistoryEvent, "id" | "time">) => void;
   addAlert: (a: Omit<Alert, "id" | "time" | "status">) => void;
   setIssue: (status: IssueStatus) => void;
   markInitialAlertSeen: () => void;
+  updateHome: (patch: Partial<Home>) => void;
+  updateOutlets: (outlets: Outlet[]) => void;
+  updateOutlet: (id: string, patch: Partial<Outlet>) => void;
+  addOutlet: (outlet: Outlet) => void;
+  removeOutlet: (id: string) => void;
+  updateDevice: (id: string, patch: Partial<Device>) => void;
+  addDevice: (device: Device) => void;
+  removeDevice: (id: string) => void;
+  markAlertRead: (id: string) => void;
+  markAllAlertsRead: () => void;
+  dismissAlert: (id: string) => void;
+  updateSettings: (patch: Partial<Settings>) => void;
+  updateUser: (patch: Partial<{ name: string; email: string; password: string }>) => void;
+  refillTank: (amount?: number) => void;
   reset: () => void;
 }
 const StoreCtx = createContext<Ctx | null>(null);
@@ -154,7 +170,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           municipal: "Reported as municipal supply issue", dismissed: "Marked as not a problem",
         };
         const details: Record<IssueStatus, string> = {
-          active: "", monitoring: "WaterWatch is watching Bathroom 1 for abnormal flow.",
+          active: "Bathroom 1 abnormal flow re-flagged for investigation.",
+          monitoring: "WaterWatch is watching Bathroom 1 for abnormal flow.",
           resolved: "Abnormal flow stopped. Estimated 86 L saved per night.",
           plumber: "Booking shared with a verified plumber nearby.",
           municipal: "Report submitted to BMC water department.",
@@ -170,6 +187,53 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         };
       }),
       markInitialAlertSeen: () => update((s) => ({ ...s, hasSeenInitialAlert: true })),
+      updateHome: (patch) => update((s) => ({ ...s, home: { ...s.home, ...patch } })),
+      updateOutlets: (outlets) => update((s) => ({ ...s, outlets })),
+      updateOutlet: (id, patch) => update((s) => ({
+        ...s,
+        outlets: s.outlets.map((o) => (o.id === id ? { ...o, ...patch } : o)),
+      })),
+      addOutlet: (outlet) => update((s) => ({ ...s, outlets: [...s.outlets, outlet] })),
+      removeOutlet: (id) => update((s) => ({
+        ...s,
+        outlets: s.outlets.filter((o) => o.id !== id),
+        devices: s.devices.map((d) => (d.outletId === id ? { ...d, outletId: null } : d)),
+      })),
+      updateDevice: (id, patch) => update((s) => ({
+        ...s,
+        devices: s.devices.map((d) => (d.id === id ? { ...d, ...patch } : d)),
+      })),
+      addDevice: (device) => update((s) => ({ ...s, devices: [...s.devices, device] })),
+      removeDevice: (id) => update((s) => ({ ...s, devices: s.devices.filter((d) => d.id !== id) })),
+      markAlertRead: (id) => update((s) => ({
+        ...s,
+        alerts: s.alerts.map((a) => (a.id === id ? { ...a, status: a.status === "unread" ? "read" : a.status } : a)),
+      })),
+      markAllAlertsRead: () => update((s) => ({
+        ...s,
+        alerts: s.alerts.map((a) => (a.status === "unread" ? { ...a, status: "read" } : a)),
+      })),
+      dismissAlert: (id) => update((s) => ({
+        ...s,
+        alerts: s.alerts.filter((a) => a.id !== id),
+      })),
+      updateSettings: (patch) => update((s) => ({ ...s, settings: { ...s.settings, ...patch } })),
+      updateUser: (patch) => update((s) => ({
+        ...s,
+        user: s.user ? { ...s.user, ...patch } : { name: "Ananya", email: "ananya@example.in", password: "password123", ...patch },
+      })),
+      refillTank: (amount = 100) => update((s) => {
+        const newLevel = Math.min(100, Math.round(s.home.tankLevel + (amount / s.home.tankCapacity) * 100));
+        const now = new Date().toISOString();
+        return {
+          ...s,
+          home: { ...s.home, tankLevel: newLevel },
+          history: [{
+            id: uid(), time: now, title: "Tank refilled",
+            detail: `Refilled by ${amount} L. Level now at ${newLevel}%.`, outlet: "Tank", type: "system",
+          }, ...s.history],
+        };
+      }),
       reset: () => { localStorage.removeItem(KEY); localStorage.removeItem(SEEN_KEY); setState(seed()); },
     };
   }, [state, hydrated]);
