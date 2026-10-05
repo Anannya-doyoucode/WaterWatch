@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useStore } from "@/lib/store";
-import { Loading } from "./_shell";
+import { Loading } from "@/components/ww/Loading";
 
 export const Route = createFileRoute("/")({
   head: () => ({
